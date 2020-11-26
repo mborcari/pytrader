@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Deletar Ativo{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <form action="{% url 'core:ativo-delete' object.codigo %}" method="POST" class="form-group">
+                {% csrf_token %}
+                    <p> Deseja realmente deletar o registro "{{ object.codigo }}"?</p>
+                <input type="submit" class="btn btn-danger" value="Confirmar">
+                <a name="va_{{object.id}}" id="va_{{object.id}}" class="btn btn-info" href="{{ object.get_absolute_url }}" role="button">Voltar</a>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

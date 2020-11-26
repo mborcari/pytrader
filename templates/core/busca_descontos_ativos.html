@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Busca desconto de ativos{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <div class="col-sm-12 mt-4">
+                <form action="{% url 'core:busca_desconto_por_porcentagem' %}" method="GET" class="form-group">
+                    <div class='form-group'>
+                        <label for="porcentagem" class="control-label">Porcentagem: </label>
+                        <input name='porcentagem' value=85 required></input>
+                        <label for="dias" class="control-label ml-4">Dias utéis: </label>
+                        <input name='dias' value=42 required></input>
+                        <label for="filtro_fechamento" class="control-label ml-4">Filtro de Fechamento: </label>
+                        <input name='filtro_fechamento' value=1></input>
+                        <input type="submit" onclick="div_loader()" class="w3-button w3-teal w3-round ml-4" value="Buscar">
+                    </div>   
+                </form>
+            </div>
+        </div>
+        {% if lista_descontos %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center mt-4" id='table_ativo'>
+                    <h3> Spreed por ação para a probabilidade maior que {{porcentagem_alvo}}% em {{pregoes}} pregões, utilizando filtro de fechamento {{filtro_fechamento}}</h2>
+                        <p>
+                            <b>PFB</b> - Porcetagem de fechamentos bons.</br>
+                            <b>VFM</b> - valor de variação entre o fechamento do dia anterior e a mínina do dia.</br>
+                        </p>
+                    <thead class='thead-light'>
+                        <tr>
+                            <th scope="col">Ativo</th>
+                            <th scope="col">Desconto para {{porcentagem_alvo}}% de probabilidade</th>
+                            <th scope="col">PFB em relação ao IBOV</th>
+                            <th scope="col">PFB 1%</th>
+                            <th scope="col">PFB 2%</th>
+                            <!-- <th scope="col">VFM para {{porcentagem_alvo}}% de probabilidade</th> -->
+                            <th scope="col">Última variação</th>
+                            <th scope="col">Variação 7 dias</th>
+                            <th scope="col">Variação 30 dias</th>
+                            <th scope="col">Variação 60 dias</th>
+                            <th scope="col">Variação 90 dias</th>
+                            <th scope="col">Variação 180 dias</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for index in lista_descontos %}
+                            <tr>
+                                <td><a class='w3-button w3-round w3-blue-grey w3-border' target="_blank" href="{{ index.0.get_absolute_url }}">{{ index.0.codigo }}</a> </td>
+                                <td>{{index.1}}%</td>
+                                <td>{{index.2}}%</td>
+                                <td>{{index.3}}%</td>
+                                <td>{{index.4}}%</td>
+                                <!-- <td>{{index.5}}</td> -->
+                                <td>{{index.6}}</td>
+                                <td>{{index.7}}</td>
+                                <td>{{index.8}}</td>
+                                <td>{{index.9}}</td>
+                                <td>{{index.10}}</td>
+                                <td>{{index.11}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <H2> Descontos não calculados</H2>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Detail Day Trade {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-5 bg-light">
+            <H2>Day Trade - {{ object }}</H2>
+            <p>Data da Day Trade - {{ object.data_acao }} </p>
+            <p>Corretora - {{ object.corretora }} </p>
+            <p>Bolsa - {{ object.tipo_bolsa }} </p>
+            <p>Valor líquido - R$ {{ object.valor_liquido }} </p>
+            <p>Valor Bruto - R$ {{ object.valor_bruto }} </p>
+            <p>Taxas / Liquidação - R$ {{ object.taxas }} </p>
+            <p>Emulentos - R$ {{ object.emulentos }} </p>
+            <p>IR retido na fonte - R$ {{object.irrf }} </p>
+            <p name='imposto'>Imposto de renda - R$ {{ object.ir_day_trade }} </p>
+            <p>Descrição - {{ object.descricao }} </p>
+            <a class='w3-button w3-teal w3-round'  href="{% url 'core:day-update' object.id %}">Editar</a>
+            <a class='w3-button w3-red w3-round'  href="{% url 'core:day-delete' object.id %}">Deletar</a>
+            <a class='w3-button w3-gray w3-round'  href="{% url 'core:day-list' %}">Voltar para lista</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

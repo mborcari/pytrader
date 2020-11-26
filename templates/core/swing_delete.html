@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Deletar registro de Swing Trade{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <form action="{% url 'core:swing-delete' object.id %}" method="POST" class="form-group">
+                {% csrf_token %}
+                    <p> Deseja realmente deletar o registro "{{ object.id }}"?</p>
+                <input type="submit" class="btn btn-danger" value="Confirmar">
+                <a name="va_{{object.id}}" id="va_{{object.id}}" class="btn btn-outline-info" href="{{ object.get_absolute_url }}" role="button">Voltar</a>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

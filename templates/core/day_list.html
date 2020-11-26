@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista Day Trade {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class='row'>
+            <div class="col-sm-2">
+                <a href="{% url 'core:day-create' %}" class='w3-button w3-teal w3-round my-4'><span class="fas fa-plus"></span>  Adicionar DayTrade</a>
+            </div>
+            <div class="col-sm-10 mt-4">
+                <form action="{% url 'core:day-list' %}" method="GET" class="form-group">
+                    <div class='form-group'>
+                        <label for="mes" class="control-label">Mês</label>
+                        <input name='mes' required></input>
+                        <label for="ano" class="control-label ml-4">Ano</label>
+                        <input name='ano' required></input>
+                        <input type="submit" class="w3-button w3-teal w3-round ml-4" value="Filtrar">
+                    </div>  
+                </form>
+            </div>
+        </div>
+       
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_daytrade'>
+                {% if day_list %}
+                <thead class='thead-light'>
+                    <tr>
+                        <th scope="col">Detalhes</th>
+                        <th scope="col">Data da movimentação</th>
+                        <th scope="col">Bolsa</th>
+                        <th scope="col">Corretora</th>
+                        <th scope="col">Valor bruto</th>
+                        <th scope="col">Valor liquido</th>
+                        <th scope="col">Imposto de renda</th>
+                    </tr>
+                </thead>
+                <tbody id='tbody_day'>
+                        {% for day in day_list %}
+                        <tr>
+                            <td><a name="day_{{day.id}}" id="day_{{dat.id}}" class='w3-button w3-teal w3-round' href="{{ day.get_absolute_url }}">Visualizar</a></td>
+                            <td name='data_day'>{{ day.data_acao | date:'d-m-Y' }}</td>
+                            <td> {{ day.get_tipo_bolsa_display }}</td>
+                            <td>{{ day.get_corretora_display }}</td>
+                            <td name='valor_bruto'>{{ day.valor_bruto }}</td>
+                            <td name='valor_liquido'>{{ day.valor_liquido }}</td>
+                            <td name='imposto_renda'>{{ day.ir_day_trade }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan='4' style='text-align:right'>Total</td>
+                            <td id='valor_bruto_total'></td>
+                            <td id='valor_liquido_total'></td>
+                            <td id='imposto_renda_total'></td>
+                        </tr>
+                </tbody>
+                {% else %}
+                    <H2> Não foram encontrados movimentações do tipo Day Trade </H2>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

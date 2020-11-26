@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Atualizar Day Trade{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+{% load widget_tweaks %}
+<main>
+    <div class="container py-4 bg-light">
+            <form action="{% url 'core:day-create' %}" method="POST" class="form-group">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class='form-group'>
+                            <span class='text-danger small'> {{ field.errors }}</span>
+                            <label class="control-label col-sm-10" for="{{field.id_for_label}}"> {{ field.label }} </label> 
+                            {% if field.name == 'data_acao' %}
+                                <div class='col-sm-12'> {{ field | attr:"autocomplete=off" | add_class:'form-control datepicker'}}</div>
+                            {% else %}
+                                <div class='col-sm-12'> {{ field | add_class:'form-control'}}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                <div class='form-group'>
+                    <div class='col-sm-12'>
+                        <input type="submit" class="w3-button w3-teal w3-round" value="Salvar">
+                    </div>
+                </div>
+            </form>
+        </div>
+</main>
+{% endblock %}

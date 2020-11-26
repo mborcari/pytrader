@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Detail Pagamento {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-5 bg-light">
+            <H2>Pagamento - {{ object.id }}</H2>
+            <p> Nome da conta-  <a  class='btn btn-outline-secondary' href="{% url 'core:conta-detail' object.conta.id %}"> {{ object.conta }} </a> </p>
+            <p name='valor'>Valor - R$ {{ object.valor }}</p>
+            <p> Dia do vencimento - {{ object.conta.dia_vencimento }}</p>
+            <p> Data do pagamento - {{ object.data_pagamento }} </p>
+            <p> Empresa da conta - {{ object.conta.empresa }} </p>
+            
+            <a class='btn btn-primary'  href="{% url 'core:pagamento-update' object.id %}">Editar</a>
+            <a class='btn btn-danger'  href="{% url 'core:pagamento-delete' object.id %}">Deletar</a>
+            <a class='btn btn-outline-secondary'  href="{% url 'core:pagamento-list' %}">Voltar para lista</a>
+        </div>
+    </div>
+    <script>
+    </script>
+</main>
+{% endblock %}

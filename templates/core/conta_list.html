@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista de ativos {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<main>
+    <div class="container-fluid">
+    <div class="w3-bar">
+        <a href="{% url 'core:conta-create' %}" class='btn btn-outline-success my-4'><span class="fas fa-plus"></span>  Adicionar Conta</a>
+    </div>
+    {% if object_list %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_conta'>
+               <thead class='thead-light'>
+                    <tr>
+                        <!-- <th scope="col"><a href="{% url 'core:conta-create' %}" class='btn btn-success'><span class="fas fa-plus"></span>  Adicionar</a></th> -->
+                        <th scope="col">Conta</th>
+                        <th scope="col">Empresa</th>
+                        <th scope="col">Dia do vencimento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <td><a name="conta_{{object.id}}" id="conta_{{object.id}}" class='btn btn-outline-success' href="{{ object.get_absolute_url }}">{{ object.conta }}</a> </td>
+                        <td>{{ object.empresa }}</td>
+                        <td>{{ object.dia_vencimento }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+         {% else %}
+            <H2> Não foram encontrados contas modelos</H2>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Detail Swing Trade {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-5 bg-light">
+            <H2>ID Swing Trade - {{ object.id }}</H2>
+            <p> Código -  <a  class='btn btn-outline-secondary' href="{% url 'core:swing-detail' object.codigo.id %}"> {{ object.codigo }} </a> </p>
+            <p> Quantidade - {{ object.quantidade }}</p>
+            <p> Tipo da Movimentação - {{ object.get_tipo_movimentacao_display }}</p>
+            <p> Data da Movimentação - {{ object.data_acao }} </p>
+            <p> Ações vendidas - {{ object.vendido }} </p>
+            <p name='valor'>Valor - R$ {{ object.valor }}</p>
+            <p name='valor_atual'>Cotaçao atual - R$ {{ object.codigo.cotacao_atual}} ({{object.codigo.data_cotacao_atual}})</p>
+            <p name='diferenca'>Diferença do valor - R$ {{ object.diferencao_valor_venda}} </p>
+
+            <a class='btn btn-primary'  href="{% url 'core:swing-update' object.id %}">Editar</a>
+            <a class='btn btn-danger'  href="{% url 'core:swing-delete' object.id %}">Deletar</a>
+            <a class='btn btn-outline-secondary'  href="{% url 'core:swing-list' %}">Voltar para lista</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

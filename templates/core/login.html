@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static '/css/w3.css' %}">
+    <link rel="stylesheet" href="{% static '/core/css/investimentos.css' %}">
+    <link rel="stylesheet" href="{% static '/css/jquery-ui.css' %}">
+    <title> PyTrader - Login</title>
+</head>
+
+<body>
+    
+    <div id='login' class="container">
+        <div class="row .d-flex ">
+            <div class="col-md-6 offset-md-3 justify-content-center">
+                        <!-- form card login -->
+                        <div class="card rounded shadow shadow-sm">
+                            <div class="card-header">
+                                <h3 class="mb-0 text-center">PyTrader System</h3>
+                            </div>
+                            {% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+                           
+                            <div class="card-body">
+                                <form class="form" role="form" autocomplete="off" id="formLogin" novalidate="" method="POST" action="{% url 'core:login' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="uname1">Usuário</label>
+                                        <input type="text" class="form-control form-control-lg rounded-0" name="uname1" id="uname1" required="">
+                                        <div class="invalid-feedback">Favor informar seu usuário.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Senha</label>
+                                        <input type="password" class="form-control form-control-lg rounded-0" name='pwd1' id="pwd1" required="" autocomplete="new-password">
+                                        <div class="invalid-feedback">Favor informar sua senha</div>
+                                    </div>
+                                    <button type="submit" class="w3-button w3-teal w3-block" id="btnLogin">Entrar</button>
+                                </form>
+                            </div>
+                            <!--/card-block-->
+                        </div>
+                        <!-- /form card login -->
+                </div>
+            </div>
+            <!--/col-->
+        </div>
+        <!--/row-->
+    </div>
+    <!--/container-->
+
+    <script src="https://kit.fontawesome.com/819dcc4a7a.js" crossorigin="anonymous"></script>
+    <script src="{% static '/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static '/js/jquery-ui.js' %}"></script>
+    <script src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static '/js/bootbox.all.js' %}"></script>
+    <script>
+
+
+        $(document).ready(function() {
+            $("#btnLogin").click(function(event) {
+
+            //Fetch form to apply custom Bootstrap validation
+            var form = $("#formLogin")
+
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+
+            form.addClass('was-validated');
+            });
+
+        });
+    </script>
+</body>
+
+</html>

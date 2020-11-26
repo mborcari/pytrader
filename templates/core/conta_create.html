@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Atualizar Contas{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+{% load widget_tweaks %}
+<main>
+    <div class="container py-4 bg-light">
+            <form action="{% url 'core:conta-create' %}" method="POST" class="form-group">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class='form-group'>
+                            <span class='text-danger small'> {{ field.errors }}</span>
+                            <label class="control-label col-sm-10" for="{{field.id_for_label}}"> {{ field.label }} </label> 
+                            <div class='col-sm-12'> {{ field | add_class:'form-control'}}</div>
+                        </div>
+                    {% endfor %}
+                <div class='form-group'>
+                    <div class='col-sm-12'>
+                        <input type="submit" class="btn btn-success" value="Salvar">
+                    </div>
+                </div>
+            </form>
+        </div>
+</main>
+{% endblock %}

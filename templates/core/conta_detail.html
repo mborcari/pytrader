@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Detail Conta {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <H2>ID - {{ object.id }} - {{ object.conta }}</H2>
+            <p> Empresa - {{ object.empresa }} </p>
+            <p> Dia da vencimento - {{ object.dia_vencimento }} </p>
+            <a class='btn btn-success'  href="{% url 'core:conta-update' object.id %}">Editar</a>
+            <a class='btn btn-danger'  href="{% url 'core:conta-delete' object.id %}">Deletar</a>
+            <a class='btn btn-primary'  href="{% url 'core:conta-list'%}">Voltar para lista</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

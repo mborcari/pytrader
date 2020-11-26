@@ -1,0 +1,44 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista de receita {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+ 
+<main>
+    <div class="container-fluid">
+    <div class="w3-bar">
+        <a href="{% url 'core:receita-create' %}" class='btn btn-outline-success my-4'><span class="fas fa-plus"></span>  Adicionar Receita</a>
+    </div>
+    {% if object_list %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_receita'>
+               <thead class='thead-light'>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Tipo da receita</th>
+                        <th scope="col">Data da receita</th>
+                        <th scope="col">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <td><a name="rec_{{object.id}}" id="rec_{{object.id}}" class='btn btn-outline-success' href="{{ object.get_absolute_url }}">{{ object.id }}</a> </td>
+                        <td>{{ object.tipo_receita }}</td>
+                        <td>{{ object.data_receita }}</td>
+                        <td name='valor'>{{ object.valor }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan='3' style='text-align:right'>Total</td>
+                        <td  id='balanco_total'></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+         {% else %}
+            <H2> Não foram encontrados pagamentos de contas</H2>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

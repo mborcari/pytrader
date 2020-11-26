@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista Swing Trades {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+         <div class='row'>
+            <div class="col-sm-2">
+                <a href="{% url 'core:swing-create' %}" class='w3-button w3-teal w3-round my-4'><span class="fas fa-plus"></span>Adicionar SwingTrade</a>
+            </div>
+            <div class="col-sm-10 mt-4">
+                <form action="{% url 'core:swing-list' %}" method="GET" class="form-group">
+                    <div class='form-group'>
+                        <label for="mes" class="control-label">Mês</label>
+                        <input name='mes'></input>
+                        <label for="ano" class="control-label ml-4">Ano</label>
+                        <input name='ano' value='2020'></input>
+                        <input type="submit" class="w3-button w3-teal w3-round ml-4" value="Filtrar">
+                    </div>  
+                </form>
+            </div>
+        </div>
+
+        <div class="divTable" id='div_table_swing' style="width: 30%; align-items: center;" >
+            <table class="table table-bordered table-hover text-center mt-4" id='table_sum_swing'>
+                <thead class='thead-light'>
+                    <th scope="col">Balanço final</th>
+                    <th scope="col">Soma das compras</th>
+                    <th scope="col">Soma das vendas</th>
+                </thead>
+                <tbody id='tbody_movs'>
+                    <td id='balanco_final'></td>
+                    <td id='soma_compras'></td>
+                    <td id='soma_vendas'></td>
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_swing'>
+                {% if swing_list %}
+                <thead class='thead-light'>
+                    <tr>
+                        <th scope="col">Detalhes</th>
+                        <th scope="col">Ativo</th>
+                        <th scope="col">Tipo da movimentação</th>
+                        <th scope="col">Data da movimentação</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Valor Total</th>
+                        <th scope="col">Diferença Compra/Venda</th>
+                        <!-- <th scope="col">Tipo do ativo</th> -->
+                    </tr>
+                </thead>
+                <tbody id='tbody_swing'>
+                        {% for swing in swing_list %}
+                        <tr>
+                            <td><a name="mov{{swing.id}}" id="mov_{{swing.id}}" class='btn btn-outline-success' href="{{ swing.get_absolute_url }}">Visualizar</a></td>
+                            <td>{{swing.codigo}}</td>
+                            <td >{{ swing.get_tipo_movimentacao_display }}</td>
+                            <td name='data_mov'>{{ swing.data_acao}}</td>
+                            <td name='acao_quantidade'>{{ swing.quantidade}}</td>
+                            {% if swing.tipo_movimentacao == 'compra'%}
+                                <td name='valor_compra'>{{ swing.valor }}</td>
+                                <td name='valor_total_compra'>{{ swing.valor_total_operacao }}</td>
+                            {% else %}
+                                <td name='valor_venda'>{{ swing.valor }}</td>
+                                <td name='valor_total_venda'>{{ swing.valor_total_operacao }}</td>
+                            {% endif %}
+                            <td name='valor_diferenca'>{{ swing.diferencao_valor_venda }}</td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+                {% else %}
+                    <H2> Não foram encontrados swing trades </H2>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <link rel="stylesheet" href="{% static '/css/w3.css' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static '/img/dollar.ico' %} " >
+    <link rel="stylesheet" href="{% static '/core/css/investimentos.css' %}?version=23044">
+    <link rel="stylesheet" href="{% static '/css/jquery-ui.css' %}">
+    <title> {% block title %} {% endblock  %}</title>
+
+    <script>
+
+          function calcula_porcetagem_tbl(e) {
+            var name = e.getAttribute('name');
+            var valor_celular = parseInt(e.innerText);
+            switch(name) {
+                    case 'valor_col_2':
+                        var total = parseInt(document.getElementById('valor_col_2_total').innerText);
+                        break;
+                    case 'valor_col_3':
+                        var total = parseInt(document.getElementById('valor_col_3_total').innerText);
+                        break;
+                    case 'valor_col_4':
+                        var total = parseInt(document.getElementById('valor_col_4_total').innerText);
+                        break;
+                    default:
+                        return
+                    }
+            
+                e.children[0].innerText = ((valor_celular / total) * 100).toFixed(2) + "%";
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm w3-teal navbar-dark w3-large" style='box-shadow: 0 0 20px 0 #888888'>
+
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#invbar" aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+                   <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'core:index'%}"> PyTrade <span class="fas fa-dollar-sign"></span></a>
+            </div>
+
+            <div class="collapse navbar-collapse mr-auto" id="invbar">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Financeiro
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'core:pagamento-list' %}">Pagamentos</a>
+                            <a class="dropdown-item" href="{% url 'core:conta-list'%}">Contas</a>
+                            <a class="dropdown-item" href="{% url 'core:receita-list'%}">Receitas</a>
+                      </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Trader
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'core:swing-list'%}">Swing Trade</a>
+                            <a class="dropdown-item" href="{% url 'core:day-list'%}">Day Trade</a>
+                            <a class="dropdown-item" href="{% url 'core:ativo-list'%}">Lista de Ativos</a>
+                      </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Automação
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'core:confirma_buscar_historicos' 120 %}">Busca históricos 120 dias</a>
+                            <a class="dropdown-item" href="{% url 'core:confirma_buscar_historicos' 5 %}">Busca históricos 5 dias</a>
+                            <a class="dropdown-item" href="{% url 'core:calcula_variacao_e_diferenca' %}">Calcular variação e diferença</a>
+                            <a class="dropdown-item" href="{% url 'core:busca_desconto_por_porcentagem' %}">Calcular descontos</a>
+                    </li>
+
+                </ul>
+                <!-- <form class="form-inline ml-4 my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+                </form> -->
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <li class='nav-item mx-4' >
+                        {{ user.get_username }}
+                    </li>
+                    <li class='nav-item'>
+                        <a id="logout" href="{% url 'logout'%}"><span class="fas fa-sign-out-alt"></span>Logout</a>
+                    </li>
+                {% endif %} 
+             </ul>
+            </ul>
+
+        </div>
+
+    </nav>
+    {% block main %} {% endblock %}
+    <script src="https://kit.fontawesome.com/819dcc4a7a.js" crossorigin="anonymous"></script>
+    <script src="{% static '/js/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static '/js/jquery-ui.js' %}"></script>
+    <script src="{% static '/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static '/js/bootbox.all.js' %}"></script>
+    <script src="{% static '/core/js/investimento.js' %}?version=4"></script>
+    <script>
+
+        $(document).ready(function() {
+            // Datapicker utilizado em campos de data
+            $( function() {
+                $(".datepicker").datepicker( {
+                    dateFormat: 'dd/mm/yy'
+                });
+            } );
+            // Chama demais funções do investimento.js
+            onload();
+        });
+
+    </script>
+</body>
+
+</html>

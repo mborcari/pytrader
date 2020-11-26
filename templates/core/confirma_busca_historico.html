@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %} 
+{% block  title %}Carregar histórico de ativos{% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <form action="{% url 'core:busca_historico_ativos' dias %}" method="POST" class="form-group">
+                {% csrf_token %}
+                    <H2 class="my-4"> Deseja realmente buscar o histórico de {{dias}} dias de cada ativo?</h2>
+                <input type="submit" onclick="div_loader()"  class="w3-button w3-teal w3-round w3-large" value="Confirmar">
+                <a name="voltar" id="voltar" class="w3-button w3-blue-grey w3-round w3-large" href="{% url 'core:ativo-list' %}" role="button">Voltar</a>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

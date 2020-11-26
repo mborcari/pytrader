@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista de pagamentos {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+ 
+<main>
+    <div class="container-fluid">
+       <div class='row'>
+            <div class="col-sm-2">
+                <a href="{% url 'core:pagamento-create' %}" class='w3-button w3-teal w3-round my-4'><span class="fas fa-plus"></span>  Adicionar Pagamentos</a>
+            </div>
+        <div class="col-sm-10 mt-4">
+                <form action="{% url 'core:pagamento-list' %}" method="GET" class="form-group">
+                    <div class='form-group'>
+                        <label for="mes" class="control-label">Mês</label>
+                        <input name='mes'></input>
+                        <label for="ano" class="control-label ml-4">Ano</label>
+                        <input name='ano' value='2020'></input>
+                        <input type="submit" class="w3-button w3-gray w3-round ml-4" value="Filtrar">
+                    </div>   
+                </form>
+            </div>
+        </div>
+    {% if object_list %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_pagamento'>
+               <thead class='thead-light'>
+                    <tr>
+                        <th scope="col">Detalhes</th>
+                        <th scope="col">Conta</th>
+                        <th scope="col">Mês Vigente</th>
+                        <th scope="col">Dia vencimento</th>
+                        <th scope="col">Data pagamento</th>
+                        <th scope="col">Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <td><a name="pag_{{object.id}}" id="pag_{{object.id}}" class='w3-button w3-teal w3-round' href="{{ object.get_absolute_url }}">Visualizar</a> </td>
+                        <td>{{ object.conta }}</td>
+                        <td>{{ object.mes_vigente }}</td>
+                        <td>{{ object.conta.dia_vencimento }}</td>
+                        <td>{{ object.data_pagamento | date:'d-m-Y' }}</td>
+                        <td name='valor'>{{ object.valor }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan='5' style='text-align:right'>Total</td>
+                        <td id='balanco_total'></td>
+                    </tr>
+                </tbody>
+            </table>
+            {% if contas_pendente %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center mt-4" id='table_contas_pendentes'>
+                <thead class='thead-light'>
+                        <tr>
+                            <td colspan='5' style='text-align:center'>
+                            <H2> Contas pendentes </H2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Conta</th>
+                            <th scope="col">Empresa</th>
+                            <th scope="col">Dia do vencimento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in contas_pendente %}
+                        <tr>
+                            <td><a name="conta_{{object.id}}" id="conta_{{object.id}}" class='w3-button w3-teal w3-round' href="{{ object.get_absolute_url }}">{{ object.conta }}</a> </td>
+                            <td>{{ object.empresa }}</td>
+                            <td>{{ object.dia_vencimento }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        </div>
+         {% else %}
+            <H2> Não foram encontrados pagamentos de contas</H2>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

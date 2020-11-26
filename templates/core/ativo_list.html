@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %} 
+{% block  title %} Lista de ativos {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+ 
+<main>
+    <div class="container-fluid">
+        <!-- <div class="w3-bar">
+            <a href="{% url 'core:ativo-create' %}" class='btn btn-outline-success my-4'><span class="fas fa-plus"></span>  Adicionar Ativo</a>
+        </div> -->
+        <div class="container-fluid mt-2">
+            <H3> Existem {{quantidade_ativos}} ativos cadastrados</H3>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center mt-4" id='table_ativo'>
+               <thead class='thead-light'>
+                    <tr>
+                        <th scope="col"><a href="{% url 'core:ativo-create' %}"  class='w3-button w3-round w3-teal'><span class="fas fa-plus"></span>  Adicionar</a></th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Setor</th>
+                        <th scope="col">Operar</th>
+
+                    </tr>
+                </thead>
+                {% if ativos_list %}
+                <tbody>
+                    {% for ativo in ativos_list %}
+                    <tr>
+                        <td><a name="ativo_{{ativo.codigo}}" id="ativo_{{ativo.codigo}}" target="_blank" class='w3-button w3-round w3-blue-grey w3-border' href="{{ ativo.get_absolute_url }}">{{ ativo.codigo }}</a> </td>
+                        <td>{{ ativo.nome }}</td>
+                        <td>{{ ativo.get_setor_display }}</td>
+                        {% if ativo.flag_habilitado_operar == True%}
+                        <td>Sim</td>
+                        {% else %}
+                        <td> Não </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                    <H2> Não foram encontrados ativos</H2>
+                {% endif %}
+            </table>
+        </div>
+       
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'core/base.html' %} 
+{% block  title %} {{ object.codigo }} {% endblock  %}
+{% block main%}
+{% load static %}
+{% if error_message %}<div class='alert alert-danger'><strong>{{ error_message }}</strong></div>{% endif%}
+<main>
+    <div class="container-fluid">
+        <div class="container py-4 bg-light">
+            <div class="row">
+                <div class="col-sm">
+                    <h2> {{ object.codigo }} </h2>
+                    <p> Nome: {{ object.nome }} </p>
+                    <p> Setor: {{ object.get_setor_display }} </p>
+                    {% if object.flag_habilitado_operar == True %}
+                        <p> Habilitado para operar: Sim</p>
+                    {% else %}
+                    <p> Habilitado para operar: Não</p>
+                    {% endif %}
+                    <p> Variação últimos 7 dias: {{ object.variacao_ultima_semana }}</p>
+                    <p> Variação últimos 30 dias: {{ object.variacao_ultimos_30_dias }}</p>
+                    <p> Variação últimos 60 dias: {{ object.variacao_ultimos_60_dias }}</p>
+                    <p> Variação últimos 90 dias: {{ object.variacao_ultimos_90_dias }}</p>
+                    <p> Variação últimos 180 dias: {{ object.variacao_ultimos_180_dias }}</p>
+                    <p> Dias para cálculo: {{ object.dias_calculo }}</p>
+                    <p> Porcentagem para cálculo: {{ object.porcentagem_desconto }}</p>
+                    <p> Desconto em relação IBOV: {{ object.desconto_calculado }}</p>
+                    <p> Desconto em relação a si mesmo: {{ object.calcula_valor_fechamento_com_minima_dia_anterior }}</p>
+ 
+                    <table class="table table-bordered table-hover table-light text-center mt-4">
+                        <thead class='w3-teal'>
+                            <tr>
+                                <th scope="col">Probabilidade em {{object.dias_calculo}} dias maior que -3,5</th>
+                                <th scope="col">Probabilidade em {{object.dias_calculo}} dias maior que -2,5</th>
+                                <th scope="col">Probabilidade em {{object.dias_calculo}} dias maior que -1,5</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> {{object.porcentagem_em_dias_maior_3_5}}% </td>
+                                <td> {{object.porcentagem_em_dias_maior_2_5}}% </td>  
+                                <td> {{object.porcentagem_em_dias_maior_1_5}}% </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </br>
+                    <div>
+                        <a class='w3-button w3-teal w3-round'  href="{% url 'core:ativo-update' object.codigo %}">Editar</a>
+                        <a class='w3-button w3-red w3-round'  href="{% url 'core:ativo-delete' object.codigo %}">Deletar</a>
+                        <a class='w3-button w3-blue-gray w3-round'  target="_blank" href=" https://portal.trademap.com.br/stock-detail/{{object.codigo}}/about">Trade Map</a>
+                       
+                        <a class='w3-button w3-white w3-border w3-border-teal w3-round'  href="{% url 'core:ativo-list' %}">Voltar</a>
+                    </div>
+                    <div class="mt-2">
+                        <a class='w3-button w3-white w3-border w3-border-teal w3-round'  onclick="div_loader()"  href="{% url 'core:busca_historico_ativ' object.id 120 %}">Buscar histórico 120 dias</a>
+                        <a class='w3-button w3-white w3-border w3-border-blue-gray w3-round'  onclick="div_loader()"  href="{% url 'core:busca_historico_ativ' object.id 7 %}">Buscar histórico 7 dias</a>
+                    </div>
+                    <div class='legenda mt-4'>
+                        <p><b>Legenda:</b></p>
+                        <p>
+                            <b>CD</b> - Comparação da diferença de variação da IBOV com o desconto calculado.</br>
+                            <b>CF</b> - Comparação da DMF com a DMF IBOV.</br>
+                            <b>DMF</b> - Diferença da mínina do dia com o fechamento do mesmo dia. </br>
+                            <b>DFM</b> - Diferença do fechamento com a mínina do dia.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm">
+                     <table class="table table-bordered table-hover table-light text-center mt-4" id="js-datatable">
+                        <thead class='w3-teal'>
+                            <tr>
+                                <th scope="col">Intervalo</th>
+                                <th scope="col">30 Dias</th>
+                                <th scope="col">60 Dias</th>
+                                <th scope="col">90 Dias</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> - 4.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)"> {{ object.primeiro_filtro_e_menor_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)"> {{ object.segundo_filtro_e_menor_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)"> {{ object.terceiro_filtro_e_menor_4_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> -4.5 e -3.5 </td>
+                                
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_4_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_4_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_4_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> -3.5 e -2.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_3_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_3_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_3_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> -2.5 e -1.5</td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_2_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_2_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_2_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> -1.5 e -0.5</td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_1_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_1_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_1_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                              <tr>
+                                <td scope="row" class='w3-light-gray'> -0.5 e 0.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_0_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_0_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_0_5_0_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> 0.5 e 1.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_0_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_0_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_0_5_1_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> 1.5 e 2.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_1_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_1_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_1_5_2_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> 2.5 e 3.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_2_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_2_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_2_5_3_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> 3.5 e 4.5 </td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_3_5_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_3_5_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_3_5_4_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> 4.5</td>
+                                <td name="valor_col_2" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.primeiro_filtro_e_maior_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_3" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.segundo_filtro_e_maior_4_5 }} <span class="ballon_porcetagem"></span></td>
+                                <td name="valor_col_4" class='ballon' onmouseover="calcula_porcetagem_tbl(this)">{{ object.terceiro_filtro_e_maior_4_5 }} <span class="ballon_porcetagem"></span></td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class='w3-light-gray'> Total</td>
+                                <td id="valor_col_2_total">{{ object.dias_primeiro_filtro }}</td>
+                                <td id="valor_col_3_total" >{{ object.dias_segundo_filtro }}</td>
+                                <td id="valor_col_4_total" >{{ object.dias_terceiro_filtro }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>  
+            </div>
+        </div>
+        
+        {% if historico %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover text-center mt-4" id='table_historico'>
+                <thead class='thead-light'>
+                        <tr>
+                            <th scope="col">Data</th>
+                            <th scope="col">Mínima</th>
+                            <th scope="col">Fechamento</th>
+                            <th scope="col">Variação</th>
+                            <th scope="col">Variação IBOV</th>
+                            <th scope="col" class='w3-dark-gray' >Spreed com IBOV</th>
+                            <th scope="col">CD</th>
+                            <th scope="col">DFM</th>
+                            <th scope="col">DFM. da IBOV</th>
+                            <th scope="col">DMF</th>
+                            <th scope="col">DMF da IBOV</th>
+                            <th scope="col">CF</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for line in historico %}
+                        <tr>
+                            <td class="valor">{{ line.data | date:'d-m-Y' }}</td>
+                            <td class="valor">{{ line.valor_minima }}</td>
+                            <td class="valor">{{ line.valor_fechamento }}</td>
+                            <td class="valor">{{ line.variacao_dia }}%</td>
+                            <td class="valor">{{ line.variacao_IBOV }}%</td>
+                            <td class="valor">{{ line.diferenca_variacao_com_ibov }}</td>
+                            {% if line.comparacao_diferenca_ibov_com_desconto == 1 %}
+                            <td class="w3-teal">BOM</td>
+                            {% else %}
+                                <td class="w3-orange">RUIM</td>
+                            {% endif %}
+                            <td class="valor">{{ line.diff_minima_fechamento_dia_anterior }}%</td>
+                            <td class="valor">{{ line.diferenca_fechamento_minina_ibov }}%</td>
+                            {% if line.diff_minima_fechamento == 0 %}
+                                <td class="w3-red">{{ line.diff_minima_fechamento }}%</td>
+                            {% else %}
+                                <td>{{ line.diff_minima_fechamento }}%</td>
+                            {% endif %}
+                            <td class="valor">{{ line.diferenca_minina_fechamento_ibov }}%</td>
+                            {% if line.comparacao_minina_fechamento_ibov == 1 %}
+                                <td class="w3-teal">BOM</td>
+                            {% else %}
+                                <td class="w3-orange">RUIM</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
